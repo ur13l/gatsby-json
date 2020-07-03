@@ -1,22 +1,55 @@
 import React from "react"
-import { Link } from "gatsby"
-
 import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link> <br />
-    <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
-  </Layout>
-)
+/**
+ * Styles
+ */
+
+
+/**
+ * JS Component
+ */
+const IndexPage = ({data}) => {
+  const prices = data.allPrice.edges;
+  return (
+    <Layout>
+      <h1>Prices</h1>
+      <ul>
+      {prices.map( price => (
+        <li>
+          <span className="name">{price.node.price.symbol}: </span>
+          <span className="price">{price.node.price.regularMarketPrice} |  </span>
+          <span className="percent">{price.node.price.regularMarketChangePercent}</span>
+        </li>
+      ))}
+      </ul>
+    </Layout>
+  )
+}
+
+/**
+ * GraphQL
+ */
+
+export const query = graphql`
+  query PricesQuery {
+    allPrice {
+      edges {
+        node {
+          id
+          price {
+            from
+            symbol
+            shortName
+            regularMarketPrice
+            regularMarketChange
+            regularMarketChangePercent
+            value
+          }
+        }
+      }
+    }
+  }
+`
 
 export default IndexPage
